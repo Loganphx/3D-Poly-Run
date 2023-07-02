@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8508488981982362346}
   - component: {fileID: 8508488981982362345}
-  - component: {fileID: 8508488981982362344}
   - component: {fileID: 4539315912707322225}
+  - component: {fileID: 755933374914047082}
   m_Layer: 0
   m_Name: Prob_Rock_Boulder_01
   m_TagString: Obstacle
@@ -62,19 +62,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8508488981982362344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8508488981982362359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09a41cfe84608b34585f6e07e307d351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 30
 --- !u!114 &4539315912707322225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,6 +76,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minScale: {x: 0.5, y: 0.5, z: 0.5}
   maxScale: {x: 1, y: 1, z: 1}
+--- !u!114 &755933374914047082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8508488981982362359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb090640f6ac49f0b65d85891798aa7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 30
 --- !u!1001 &8508488981831293936
 PrefabInstance:
   m_ObjectHideFlags: 0

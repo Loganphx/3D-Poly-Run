@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 963963123091287285}
   - component: {fileID: 5980224609770320172}
   - component: {fileID: 5980224609770320173}
-  - component: {fileID: 7477038127216261613}
+  - component: {fileID: 5193442987588808412}
   m_Layer: 0
   m_Name: Prop_StoneWall_01
   m_TagString: Obstacle
@@ -125,10 +125,21 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5127026698605962992}
-  serializedVersion: 2
+  serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
@@ -142,12 +153,20 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5127026698605962992}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Size: {x: 0.5070782, y: 1.089441, z: 5.129447}
   m_Center: {x: 0, y: 0.54472065, z: -0.22}
---- !u!114 &7477038127216261613
+--- !u!114 &5193442987588808412
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -156,7 +175,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5127026698605962992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09a41cfe84608b34585f6e07e307d351, type: 3}
+  m_Script: {fileID: 11500000, guid: eb090640f6ac49f0b65d85891798aa7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 30

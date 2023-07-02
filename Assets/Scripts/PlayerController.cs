@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -15,21 +16,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip _jumpSound;
     [SerializeField] private AudioClip _crashSound;
     
+    [Header("Player Settings")]
     [SerializeField] private bool      isGrounded        = true;
     [SerializeField] private float     jumpForce         = 10;
     [SerializeField] private float     gravityMultiplier = 1;
-    private float doubleJumpCooldown = 5;
+    [SerializeField] private float doubleJumpCooldown = 5;
+    [SerializeField] private bool canDoubleJump;
+    [SerializeField] private bool isAlive;
 
+    public Action OnDeath { get; set; }
     
-    [SerializeField] public bool gameOver = false;
     private static readonly int  JumpTrig = Animator.StringToHash("Jump_trig");
-
-    private bool canDoubleJump;
-
     private static readonly int DeathTypeINT = Animator.StringToHash("DeathType_int");
     private static readonly int DeathB       = Animator.StringToHash("Death_b");
-
-    // Start is called before the first frame update
+    
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -39,17 +39,14 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        Physics.gravity *= gravityMultiplier;
+        Physics.gravity = new Vector3(0,-9.81f,0) * gravityMultiplier;
+        isAlive = true;
         canDoubleJump = true;
     }
 
-    // Update is called once per frame
     private void Update()
     {
-        if(!gameOver)
-        {
-            if (Input.GetKeyDown(KeyCode.Space)) Jump();
-        } 
+        if (isAlive && Input.GetKeyDown(KeyCode.Space)) Jump();
     }
 
     private void Jump() 
@@ -77,7 +74,6 @@ public class PlayerController : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
-        if(gameOver) return;
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
@@ -85,13 +81,16 @@ public class PlayerController : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
-            gameOver = true;
             Debug.Log("Game Over!");
             _animator.SetBool(DeathB, true);
             _animator.SetInteger(DeathTypeINT, 1);
+            
             _explosionParticle.Play();
             _dirtParticle.Stop();
             _audioSource.PlayOneShot(_crashSound);
+            
+            OnDeath.Invoke();
+            isAlive = false;
         }
     }
 }

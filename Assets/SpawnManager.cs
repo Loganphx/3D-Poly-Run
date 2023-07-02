@@ -1,29 +1,56 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SpawnManager : MonoBehaviour
 {
-    [SerializeField] private GameObject[] prefabs;
+    [SerializeField] private Obstacle[] prefabs;
+    [SerializeField] private List<Obstacle> spawnedObstacles;
 
     [SerializeField] private Vector3 spawnPosition = new Vector3(25, 0, 0);
     // Start is called before the first frame update
 
-    private PlayerController _playerController;
     private float            startDelay = 2f;
     private float            repeatRate = 2f;
-    void Start()
+    private float leftBound = -15f;
+    
+    public void StartGame()
     {
+        spawnedObstacles = new List<Obstacle>();
         InvokeRepeating(nameof(SpawnObstacle), startDelay, repeatRate);
-        _playerController = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
+    private void FixedUpdate()
+    {
+        foreach (var obstacle in spawnedObstacles)
+        {
+            if (transform.position.x < leftBound)
+            {
+                obstacle.OnDeath.Invoke(obstacle);
+                obstacle.enabled = false;
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    public void GameOver()
+    {
+        CancelInvoke(nameof(SpawnObstacle));
+        foreach (var obstacle in spawnedObstacles)
+        {
+            obstacle.enabled = false;
+        }
+    }
     private void SpawnObstacle()
     {
-        if (!_playerController.gameOver)
-        { 
-            var prefab = prefabs[Random.Range(0,prefabs.Length)];
-            Instantiate(prefab, spawnPosition, prefab.transform.rotation);
-        }
+        var prefab = prefabs[Random.Range(0,prefabs.Length)];
+        var obstacle = Instantiate(prefab, spawnPosition, prefab.transform.rotation);
+        obstacle.OnDeath += DespawnObstacle;
+        spawnedObstacles.Add(obstacle);
+    }
+    
+    private void DespawnObstacle(Obstacle obstacle)
+    {
+        spawnedObstacles.Remove(obstacle);
     }
 }

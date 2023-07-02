@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3670352894489647720}
   - component: {fileID: 616757636398899815}
-  - component: {fileID: 9034367802328277769}
   - component: {fileID: 8038558714976944412}
+  - component: {fileID: -4282623737704393975}
   m_Layer: 0
   m_Name: Prop_Tree_Log_Pile
   m_TagString: Obstacle
@@ -64,19 +64,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &9034367802328277769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4748768151990368758}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09a41cfe84608b34585f6e07e307d351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 36
 --- !u!114 &8038558714976944412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,6 +78,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minScale: {x: 1, y: 1, z: 1}
   maxScale: {x: 2, y: 2, z: 2}
+--- !u!114 &-4282623737704393975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4748768151990368758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb090640f6ac49f0b65d85891798aa7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 40
 --- !u!1001 &2132723895186711962
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -99,6 +99,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3670352894489647720}
     m_Modifications:
+    - target: {fileID: 2802118228728145503, guid: 5794669e7a59fe34c9579f43396e21ad, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7192102237058652433, guid: 5794669e7a59fe34c9579f43396e21ad, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -168,6 +172,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3670352894489647720}
     m_Modifications:
+    - target: {fileID: 2802118228728145503, guid: 5794669e7a59fe34c9579f43396e21ad, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7192102237058652433, guid: 5794669e7a59fe34c9579f43396e21ad, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -237,6 +245,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3670352894489647720}
     m_Modifications:
+    - target: {fileID: 2802118228728145503, guid: 5794669e7a59fe34c9579f43396e21ad, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7192102237058652433, guid: 5794669e7a59fe34c9579f43396e21ad, type: 3}
       propertyPath: m_RootOrder
       value: -1
