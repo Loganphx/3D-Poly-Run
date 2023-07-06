@@ -19,14 +19,15 @@ public class PlayerController : MonoBehaviour
     [Header("Player Settings")]
     [SerializeField] private bool      isGrounded        = true;
     [SerializeField] private float     jumpForce         = 10;
-    [SerializeField] private float     gravityMultiplier = 1;
     [SerializeField] private float doubleJumpCooldown = 5;
     [SerializeField] private bool canDoubleJump;
     [SerializeField] private bool isAlive;
 
     public Action OnDeath { get; set; }
+    public Action<bool> OnAccelerate { get; set; }
     
     private static readonly int  JumpTrig = Animator.StringToHash("Jump_trig");
+    private static readonly int  SpeedF = Animator.StringToHash("Speed_f");
     private static readonly int DeathTypeINT = Animator.StringToHash("DeathType_int");
     private static readonly int DeathB       = Animator.StringToHash("Death_b");
     
@@ -39,14 +40,16 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        Physics.gravity = new Vector3(0,-9.81f,0) * gravityMultiplier;
         isAlive = true;
         canDoubleJump = true;
     }
 
     private void Update()
     {
-        if (isAlive && Input.GetKeyDown(KeyCode.Space)) Jump();
+        if (!isAlive) return;
+        if (Input.GetKeyDown(KeyCode.Space)) Jump();
+        if (Input.GetKeyDown(KeyCode.LeftShift)) Accelerate(true);
+        else if (Input.GetKeyUp(KeyCode.LeftShift)) Accelerate(false);
     }
 
     private void Jump() 
@@ -65,6 +68,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void Accelerate(bool isActive)
+    {
+        OnAccelerate?.Invoke(isActive);
+        _animator.SetFloat(SpeedF, isActive ? 1.5f : 1);
+    }
+
     private IEnumerator DoubleJumpCooldown()
     {
         canDoubleJump = false;
@@ -74,12 +83,12 @@ public class PlayerController : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (isAlive && collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
             _dirtParticle.Play();
         }
-        else if (collision.gameObject.CompareTag("Obstacle"))
+        else if (isAlive && collision.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("Game Over!");
             _animator.SetBool(DeathB, true);
@@ -91,6 +100,7 @@ public class PlayerController : MonoBehaviour
             
             OnDeath.Invoke();
             isAlive = false;
+            enabled = false;
         }
     }
 }

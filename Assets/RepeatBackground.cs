@@ -1,21 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RepeatBackground : MonoBehaviour
 {
-    private Vector3 startPosition;
-    private float   repeatWidth;
-    void Start()
+    private Transform _transform;
+    private Vector3 _startPosition;
+    private float   _repeatWidth;
+
+    private void Awake()
     {
-        startPosition = transform.position;
-        repeatWidth   = transform.localScale.x * (GetComponent<BoxCollider>().size.x / 2f);
+        _transform = transform;
+    }
+
+    private void Start()
+    {
+        _startPosition = _transform!.position;
+        _repeatWidth   = _transform!.localScale.x * (GetComponent<BoxCollider>().size.x / 2f);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if(transform.position.x < startPosition.x - repeatWidth) transform.position = startPosition;
-        
+        if (transform.position.x < _startPosition.x - _repeatWidth)
+        {
+            transform.position = _startPosition;
+        }
     }
 }

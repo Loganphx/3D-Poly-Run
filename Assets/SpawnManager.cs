@@ -1,23 +1,49 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private Obstacle[] prefabs;
     [SerializeField] private List<Obstacle> spawnedObstacles;
+    [SerializeField] private List<IMoveLeft> moveLefts;
 
     [SerializeField] private Vector3 spawnPosition = new Vector3(25, 0, 0);
-    // Start is called before the first frame update
 
-    private float            startDelay = 2f;
-    private float            repeatRate = 2f;
-    private float leftBound = -15f;
+    [SerializeField] private float startDelay = 2f;
+    [SerializeField] private float repeatRate = 2f;
+    [SerializeField] private float leftBound = -15f;
+    [SerializeField] public bool accelerate;
     
-    public void StartGame()
+    public void StartGame(DifficultyTypes difficulty)
     {
+        switch (difficulty)
+        {
+            case DifficultyTypes.Easy:
+                repeatRate = 2f;
+                break;
+            case DifficultyTypes.Medium:
+                repeatRate = 1.5f;
+                break;
+            case DifficultyTypes.Hard:
+                repeatRate = 1f;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null);
+        }
         spawnedObstacles = new List<Obstacle>();
+        moveLefts = new List<IMoveLeft>();
         InvokeRepeating(nameof(SpawnObstacle), startDelay, repeatRate);
+
+        foreach (var rootGameObject in SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            var moveLeft = rootGameObject.GetComponentInChildren<IMoveLeft>();
+            if (moveLeft != null) moveLefts.Add(moveLeft);
+        }
+
+        enabled = true;
     }
 
     private void FixedUpdate()
@@ -28,8 +54,18 @@ public class SpawnManager : MonoBehaviour
             {
                 obstacle.OnDeath.Invoke(obstacle);
                 obstacle.enabled = false;
-                Destroy(gameObject);
+                Destroy(obstacle.gameObject);
             }
+        }
+
+    }
+
+    private void Update()
+    {
+        foreach (var moveLeft in moveLefts)
+        {
+            if (accelerate) moveLeft.Transform.Translate(Vector3.left * (Time.deltaTime * moveLeft.Speed * 1.5f));
+            else moveLeft.Transform.Translate(Vector3.left * (Time.deltaTime * moveLeft.Speed));
         }
     }
 
@@ -40,6 +76,8 @@ public class SpawnManager : MonoBehaviour
         {
             obstacle.enabled = false;
         }
+
+        enabled = false;
     }
     private void SpawnObstacle()
     {
@@ -47,6 +85,7 @@ public class SpawnManager : MonoBehaviour
         var obstacle = Instantiate(prefab, spawnPosition, prefab.transform.rotation);
         obstacle.OnDeath += DespawnObstacle;
         spawnedObstacles.Add(obstacle);
+        moveLefts.Add(obstacle);
     }
     
     private void DespawnObstacle(Obstacle obstacle)
