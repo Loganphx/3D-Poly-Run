@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public enum DifficultyTypes
 {
@@ -24,9 +25,12 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private GameObject _titleScreen;
     [SerializeField] private TMP_Text _scoreText;
-    [SerializeField] private GameObject _gameOverScreen;
     [SerializeField] private GameObject _boostVisual;
-    
+    [SerializeField] private GameObject _iconBoost;
+    [SerializeField] private GameObject _iconDoubleJump;
+    [SerializeField] private GameObject _gameOverScreen;
+    [SerializeField] private Button _quitButton;
+
     [SerializeField] private PlayerController _playerController;
 
     [SerializeField] private int score;
@@ -76,10 +80,19 @@ public class GameManager : MonoBehaviour
         var canvas = GameObject.Find("Canvas").transform;
         _titleScreen = canvas.Find("TitleScreen").gameObject;
         _scoreText = canvas.Find("Text_Score").GetComponent<TMP_Text>();
+        _boostVisual = canvas.Find("Visual_Boost").gameObject;
+        var iconPanel = canvas.Find("Panel_Icons");
+        _iconBoost = iconPanel.Find("Icon_Boost").gameObject;
+        _iconDoubleJump = iconPanel.Find("Icon_DoubleJump").gameObject;
+        
         _gameOverScreen = canvas.Find("GameOverScreen").gameObject;
-
-        _playerController = Instantiate(_playerControllerPrefab, new Vector3(0,0,0), Quaternion.Euler(new Vector3(0, 90,0)));
-        _playerController.Init(GameOver, Accelerate);
+        _quitButton = _gameOverScreen.transform.Find("Button_Exit").GetComponent<Button>();
+        _quitButton.onClick.AddListener(Exit);
+        
+        _playerController = Instantiate(_playerControllerPrefab, new Vector3(1,0,0), Quaternion.Euler(new Vector3(0, 90,0)));
+        _playerController.Init(GameOver, Accelerate, OnDoubleJump);
+        
+        _iconDoubleJump.SetActive(true);
     }
 
     private void GameOver(PlayerController playerController)
@@ -94,8 +107,14 @@ public class GameManager : MonoBehaviour
     {
         _spawnManager.accelerate = isActive;
         _boostVisual.SetActive(isActive);
+        _iconBoost.SetActive(isActive);
     }
 
+    private void OnDoubleJump(bool isAvailable)
+    {
+        _iconDoubleJump.SetActive(isAvailable);
+    }
+    
     private void OnObstacleDestroyed(Obstacle obstacle)
     {
         Score += _spawnManager.accelerate ? 2 : 1 ;
@@ -112,6 +131,10 @@ public class GameManager : MonoBehaviour
 
     public void Exit()
     {
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #else
         Application.Quit();
+        #endif
     }
 }

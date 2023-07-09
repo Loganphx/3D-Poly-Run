@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [Header("Particles")]
     [SerializeField] private ParticleSystem _explosionParticle;
     [SerializeField] private ParticleSystem _dirtParticle;
+    [SerializeField] private ParticleSystem _boostParticleEffect;
 
     [Header("Audio Clips")]
     [SerializeField] private AudioClip _jumpSound;
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
 
     private Action<PlayerController> _onDeath;
     private Action<bool> _onAccelerate;
+    private Action<bool> _onDoubleJumpChanged;
     
     private static readonly int  JumpTrig = Animator.StringToHash("Jump_trig");
     private static readonly int  SpeedF = Animator.StringToHash("Speed_f");
@@ -44,10 +46,11 @@ public class PlayerController : MonoBehaviour
         canDoubleJump = true;
     }
 
-    public void Init(Action<PlayerController> onDeath, Action<bool> onAccelerate)
+    public void Init(Action<PlayerController> onDeath, Action<bool> onAccelerate, Action<bool> onDoubleJumpChanged)
     {
         _onDeath = onDeath;
         _onAccelerate = onAccelerate;
+        _onDoubleJumpChanged = onDoubleJumpChanged;
     }
     private void Update()
     {
@@ -77,13 +80,17 @@ public class PlayerController : MonoBehaviour
     {
         _onAccelerate?.Invoke(isActive);
         _animator.SetFloat(SpeedF, isActive ? 1.5f : 1);
+        if (isActive) _boostParticleEffect.Play();
+        else _boostParticleEffect.Stop();
     }
 
     private IEnumerator DoubleJumpCooldown()
     {
         canDoubleJump = false;
+        _onDoubleJumpChanged?.Invoke(canDoubleJump);
         yield return new WaitForSeconds(doubleJumpCooldown);
         canDoubleJump = true;
+        _onDoubleJumpChanged?.Invoke(canDoubleJump);
     }
     
     private void OnCollisionEnter(Collision collision)
