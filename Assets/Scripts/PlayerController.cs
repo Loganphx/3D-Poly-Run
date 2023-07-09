@@ -23,8 +23,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool canDoubleJump;
     [SerializeField] private bool isAlive;
 
-    public Action OnDeath { get; set; }
-    public Action<bool> OnAccelerate { get; set; }
+    private Action<PlayerController> _onDeath;
+    private Action<bool> _onAccelerate;
     
     private static readonly int  JumpTrig = Animator.StringToHash("Jump_trig");
     private static readonly int  SpeedF = Animator.StringToHash("Speed_f");
@@ -44,6 +44,11 @@ public class PlayerController : MonoBehaviour
         canDoubleJump = true;
     }
 
+    public void Init(Action<PlayerController> onDeath, Action<bool> onAccelerate)
+    {
+        _onDeath = onDeath;
+        _onAccelerate = onAccelerate;
+    }
     private void Update()
     {
         if (!isAlive) return;
@@ -70,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
     private void Accelerate(bool isActive)
     {
-        OnAccelerate?.Invoke(isActive);
+        _onAccelerate?.Invoke(isActive);
         _animator.SetFloat(SpeedF, isActive ? 1.5f : 1);
     }
 
@@ -98,7 +103,7 @@ public class PlayerController : MonoBehaviour
             _dirtParticle.Stop();
             _audioSource.PlayOneShot(_crashSound);
             
-            OnDeath.Invoke();
+            _onDeath.Invoke(this);
             isAlive = false;
             enabled = false;
         }

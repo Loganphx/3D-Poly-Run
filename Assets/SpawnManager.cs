@@ -15,9 +15,12 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private float startDelay = 2f;
     [SerializeField] private float repeatRate = 2f;
     [SerializeField] private float leftBound = -15f;
-    [SerializeField] public bool accelerate;
     
-    public void StartGame(DifficultyTypes difficulty)
+    // Speeds up obstacles and doubles all point values.
+    [SerializeField] public bool accelerate;
+
+    private Action<Obstacle> _onDeath;
+    public void StartGame(DifficultyTypes difficulty, Action<Obstacle> onDeath)
     {
         switch (difficulty)
         {
@@ -33,6 +36,9 @@ public class SpawnManager : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null);
         }
+
+        _onDeath = onDeath;
+        
         spawnedObstacles = new List<Obstacle>();
         moveLefts = new List<IMoveLeft>();
         InvokeRepeating(nameof(SpawnObstacle), startDelay, repeatRate);
@@ -48,16 +54,19 @@ public class SpawnManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        foreach (var obstacle in spawnedObstacles)
+        for (int i = 0; i < spawnedObstacles.Count; i++)
         {
-            if (transform.position.x < leftBound)
+            var obstacle = spawnedObstacles[i];
+        
+            if (obstacle.Transform.position.x < leftBound)
             {
                 obstacle.OnDeath.Invoke(obstacle);
                 obstacle.enabled = false;
                 Destroy(obstacle.gameObject);
+                i--;
             }
+            
         }
-
     }
 
     private void Update()
@@ -72,15 +81,13 @@ public class SpawnManager : MonoBehaviour
     public void GameOver()
     {
         CancelInvoke(nameof(SpawnObstacle));
-        foreach (var obstacle in spawnedObstacles)
-        {
-            obstacle.enabled = false;
-        }
+        foreach (var obstacle in spawnedObstacles) obstacle.enabled = false;
 
         enabled = false;
     }
     private void SpawnObstacle()
     {
+        if(spawnedObstacles.Count > 0) return;
         var prefab = prefabs[Random.Range(0,prefabs.Length)];
         var obstacle = Instantiate(prefab, spawnPosition, prefab.transform.rotation);
         obstacle.OnDeath += DespawnObstacle;
@@ -91,5 +98,7 @@ public class SpawnManager : MonoBehaviour
     private void DespawnObstacle(Obstacle obstacle)
     {
         spawnedObstacles.Remove(obstacle);
+        moveLefts.Remove(obstacle);
+        _onDeath.Invoke(obstacle);
     }
 }
