@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -71,7 +72,6 @@ public class GameManager : MonoBehaviour
         _background.enabled = true;
 
         _spawnManager = transform.Find("Spawn Manager").GetComponent<SpawnManager>();
-        _spawnManager.StartGame((DifficultyTypes)difficulty, OnObstacleDestroyed);
 
         audioSource = transform.Find("Main Camera").GetComponent<AudioSource>();
         audioSource.clip = backgroundMusic;
@@ -89,10 +89,14 @@ public class GameManager : MonoBehaviour
         _quitButton = _gameOverScreen.transform.Find("Button_Exit").GetComponent<Button>();
         _quitButton.onClick.AddListener(Exit);
         
-        _playerController = Instantiate(_playerControllerPrefab, new Vector3(1,0,0), Quaternion.Euler(new Vector3(0, 90,0)));
-        _playerController.Init(GameOver, Accelerate, OnDoubleJump);
-        
-        _iconDoubleJump.SetActive(true);
+        _playerController = Instantiate(_playerControllerPrefab, new Vector3(-5,0,0), Quaternion.Euler(new Vector3(0, 90,0)));
+
+        _playerController.transform.DOMove(new Vector3(1, 0, 0), 1f).OnComplete(() =>
+        {
+            _spawnManager.StartGame((DifficultyTypes)difficulty, OnObstacleDestroyed);
+            _playerController.Init(GameOver, Accelerate, OnDoubleJump);
+            _iconDoubleJump.SetActive(true);
+        });
     }
 
     private void GameOver(PlayerController playerController)
