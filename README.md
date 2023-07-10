@@ -2,7 +2,7 @@
 A low poly game inspired by temple ru
 
 Planned Features:
-- Varying maps and levels with different obstacles
+- Mobile Support
 - Highscore tracking
+- Varying maps and levels with different obstacles
 - Powerups to provide special abilities temporarily
-  
