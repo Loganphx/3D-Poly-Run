@@ -36,6 +36,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private int score;
 
+    private void Awake()
+    {
+        QualitySettings.vSyncCount = 1;
+        Application.targetFrameRate = 60;
+    }
+
     public int Score
     {
         get => score;
