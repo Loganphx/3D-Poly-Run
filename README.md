@@ -1,4 +1,4 @@
-# 3D-Poly-Run
+# Poly Run
 A low poly game inspired by temple ru
 
 Planned Features:
