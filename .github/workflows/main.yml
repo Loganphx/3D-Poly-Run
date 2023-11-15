@@ -38,7 +38,13 @@ jobs:
         with: 
           targetPlatform: StandaloneWindows64
           unityVersion: '2022.3.13f1'
-      
+
+       # Upload Dirty Files
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Packages
+          path: Packages
+        
       # Output
       - uses: actions/upload-artifact@v3
         with:
